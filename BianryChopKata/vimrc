@@ -1,0 +1,72 @@
+fu! IntChop(val, array, low,high)
+
+	if a:high < a:low
+		return -1
+	endif
+	let point = a:low + ((a:high-a:low)/2)
+	if (a:array[point] > a:val)
+		return IntChop(a:val,a:array,a:low, point -1)
+	endif
+	if (a:array[point] < a:val)
+		return IntChop(a:val,a:array,point+1, a:high)
+	endif
+	return point
+
+endfunction
+
+fu! RecursiveChop (val, array)
+	let start = 0
+	let stop = len(a:array)
+	let result = IntChop(a:val, a:array, start, stop - 1)
+	return result
+endfunction	
+
+fu! ItterChop (val, array)
+	let start = 0
+	let stop = len(a:array)
+	
+	while start != stop
+		let middle = start + (stop - start) / 2
+		if a:array[middle] == a:val
+			return middle
+		endif
+		if a:val < a:array[middle]
+			let stop = middle
+		else
+			let start = middle + 1
+		endif
+	endwhile
+	return -1
+endfunction
+
+
+fu! AssertEquals(left,right)
+	if (a:left==a:right)
+		echo "Pass"
+	else
+		echo "Fail"
+		
+	endif
+endfunction
+
+call AssertEquals(-1,Chop(3,[]))
+call AssertEquals(-1,Chop(3,[1])) 
+call AssertEquals(-1,Chop(3, []))
+call AssertEquals(-1,Chop(3, [1]))
+call AssertEquals(0, Chop(1, [1]))
+call AssertEquals(0, Chop(1, [1, 3, 5]))
+call AssertEquals(1, Chop(3, [1, 3, 5]))
+call AssertEquals(2, Chop(5, [1, 3, 5]))
+call AssertEquals(-1,Chop(0, [1, 3, 5]))
+call AssertEquals(-1,Chop(2, [1, 3, 5]))
+call AssertEquals(-1,Chop(4, [1, 3, 5]))
+call AssertEquals(-1,Chop(6, [1, 3, 5]))
+call AssertEquals(1, Chop(3, [1, 3, 5, 7]))
+call AssertEquals(2, Chop(5, [1, 3, 5, 7]))
+call AssertEquals(3, Chop(7, [1, 3, 5, 7]))
+call AssertEquals(-1,Chop(0, [1, 3, 5, 7]))
+call AssertEquals(-1,Chop(2, [1, 3, 5, 7]))
+call AssertEquals(-1,Chop(4, [1, 3, 5, 7]))
+call AssertEquals(-1,Chop(6, [1, 3, 5, 7]))
+call AssertEquals(-1,Chop(8, [1, 3, 5, 7])) 
+
